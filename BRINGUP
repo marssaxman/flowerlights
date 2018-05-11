@@ -1,0 +1,36 @@
+How to set up the Raspberry Pi Zero W to run as a flower head device.
+
+Start with basic Raspbian:
+  <https://downloads.raspberrypi.org/raspbian_lite_latest>
+
+Get a copy of the fadecandy server:
+  cd /home/pi
+  git clone https://www.github.com/scanlime/fadecandy/
+
+Set the server to run at startup:
+  sudo nano /etc/rc.local
+
+As the second-to-last line, before 'exit 0', insert this line:
+
+    sudo /home/pi/fadecandy/bin/fcserver-rpi
+
+
+Install the 'uncomplicated firewall' tool:
+  sudo apt install ufw
+
+Verify that it is installed but not yet running:
+  sudo ufw status
+
+You should see "Status: inactive".
+
+Set up the basic configuration:
+  sudo ufw default deny incoming
+  sudo ufw default allow outgoing
+  sudo ufw allow ssh
+
+Additionally allow the fadecandy server connection port:
+  sudo ufw allow 7890
+
+Enable the firewall:
+  sudo ufw enable
+
