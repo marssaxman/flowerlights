@@ -11,7 +11,7 @@ def main(servers, verbose):
     # Add the default port number to any server names which lack one.
     servers = [(s if ':' in s else s + ':7890') for s in servers]
     # Connect to each server and store the connection object.
-    clients = [opc.Client(s) for s in servers]
+    clients = [opc.Client(s, verbose) for s in servers]
     # Generate the animation state.
     displays = [Display(c) for c in clients]
     start_time = time.clock()
@@ -19,16 +19,22 @@ def main(servers, verbose):
 
     # as long as we have a supply of electrons, we will use them to make photons
     last_time = start_time
-    while True:
-        now_time = time.clock()
-        # don't bother to update more often than 100 Hz
-        if now_time - last_time < 0.01:
-            continue
-        for f, d in zip(flowers, displays):
-            f.render(now_time, d)
-            d.blit()
-            f.grow(now_time)
-        last_time = now_time
+    try:
+        while True:
+            now_time = time.clock()
+            # don't bother to update more often than 100 Hz
+            if now_time - last_time < 0.01:
+                continue
+            for f, d in zip(flowers, displays):
+                f.render(now_time, d)
+                d.blit()
+                f.grow(now_time)
+            last_time = now_time
+    except KeyboardInterrupt:
+        pixels = [(0, 0, 0)] * 512
+        for c in clients:
+            c.put_pixels(pixels)
+            time.sleep(0.05)
 
 
 if __name__ == '__main__':
