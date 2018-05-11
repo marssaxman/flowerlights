@@ -36,6 +36,7 @@ Recommended use:
 import socket
 import struct
 
+
 class Client(object):
 
     def __init__(self, server_ip_port, long_connection=True, verbose=False):
@@ -148,10 +149,10 @@ class Client(object):
         len_hi_byte = int(len(pixels)*3 / 256)
         len_lo_byte = (len(pixels)*3) % 256
         header = chr(channel) + chr(0) + chr(len_hi_byte) + chr(len_lo_byte)
-        pieces = [header] + [ struct.pack( "BBB",
-                     min(255, max(0, int(r))),
-                     min(255, max(0, int(g))),
-                     min(255, max(0, int(b)))) for r, g, b in pixels ]
+        pieces = [header] + [struct.pack("BBB",
+                                         min(255, max(0, int(r))),
+                                         min(255, max(0, int(g))),
+                                         min(255, max(0, int(b)))) for r, g, b in pixels]
 
         message = ''.join(pieces)
 
@@ -168,5 +169,3 @@ class Client(object):
             self.disconnect()
 
         return True
-
-
